@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/apiErrors.js";
 
 const globalErrorHandle = (err, req, res, next) => {
-    let status;
+    let status = 500;
     
     if((err instanceof ApiError)){
         let errorJson = {

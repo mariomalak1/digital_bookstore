@@ -14,7 +14,7 @@ app.use(Express.json());
 
 await dbConnection()
 
-app.use("/api/v1", apiRouter);
+app.use("/api", apiRouter);
 
 app.use((req, res, next) => {
     next(new ApiError("invalid route", 404));
@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 
 app.use(globalErrorHandle);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

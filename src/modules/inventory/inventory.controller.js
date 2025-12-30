@@ -1,5 +1,5 @@
 import fs from "fs";
-
+import { parse } from "csv-parse";
 import { sequelize } from "../../db/dbConnection.js"
 import { Book, Author, Store, StoreBook } from "../../db/models/models.js"
 
@@ -73,33 +73,38 @@ export const uploadInventory = async (req, res, next) => {
   }
 
   const records = []
+  const uploadDir = './uploads'
 
   try {
-    fs.createReadStream(req.file.path)
-      .pipe(parse({ columns: true, trim: true }))
-      
-      .on('data', (row) => records.push(row))
-      
-      .on('end', async () => {
-        
-        const { state, data, err } = await processCSV(records)
-        
-        if(!state){
-          res.status(500).json({message: err})
-        }
-        
-        res.json({
-          message: 'Inventory uploaded successfully',
-          data: records,
-        })
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir)
+    const fileStream = fs.createReadStream(req.file.path)
+    const parser = parse({ columns: true, trim: true })
 
+    fileStream.pipe(parser)
+      .on('data', (row) => records.push(row))
+      .on('end', async () => {
+        try {
+          const { state, data, err } = await processCSV(records)
+          if (!state) {
+            return res.status(500).json({ message: err })
+          }
+
+          res.json({
+            message: 'Inventory uploaded successfully',
+            data: records,
+          })
+        } finally {
+          fs.unlink(req.file.path, () => {})
+        }
+      })
+      .on('error', (streamErr) => {
+        console.error('Stream/Parser error:', streamErr)
+        fs.unlink(req.file.path, () => {})
+        res.status(500).json({ message: 'CSV processing failed', error: streamErr.message })
       })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'CSV processing failed' })
   }
 
-  finally{
-    fs.unlinkSync(req.file.path)
-  }
 }
