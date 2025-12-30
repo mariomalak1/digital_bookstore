@@ -1,7 +1,8 @@
 import { Router } from "express"; 
 
-// import {  } from "./store.controller.js";
-import validator from "../../middlewares/validator.middleware.js"
+import { getStoreReports } from "./store.controller.js";
 
 export const router = Router();
+
+router.get('/:id/download-report', getStoreReports);
 
