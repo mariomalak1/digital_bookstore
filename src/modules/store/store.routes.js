@@ -5,4 +5,3 @@ import validator from "../../middlewares/validator.middleware.js"
 
 export const router = Router();
 
-// router.get("", validator(storeSchemas.get), );
