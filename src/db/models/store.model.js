@@ -1,39 +1,41 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../dbConnection.js";
-
-import { Book, StoreBook } from "./models.js" 
-
-const storeSchema = {
-    id: {
+const StoreInitializer = (sequelize, DataTypes) => {
+  const Store = sequelize.define(
+    'Store',
+    {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-    },
-   
-    name: {
+      },
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    
-    address: {
+      },
+      address: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    
-    logo: {
+      },
+      logo: {
         type: DataTypes.STRING,
         allowNull: true,
+      },
     },
+    {
+      tableName: 'stores',
+      timestamps: false,
+    }
+  )
+
+  Store.associate = (models) => {
+    Store.belongsToMany(models.Book, {
+      through: models.StoreBook,
+      foreignKey: 'store_id',
+      otherKey: 'book_id',
+    })
+  }
+
+  return Store
 }
 
-const Store = sequelize.define('Store', storeSchema, 
-	{
-		timestamps: true,
-	}
-)
 
-Store.belongsToMany(Book, {
-	through: StoreBook,
-	foreignKey: 'store_id',
-	otherKey: 'book_id',
-})
+export default StoreInitializer;

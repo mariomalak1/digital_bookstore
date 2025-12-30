@@ -1,29 +1,30 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../dbConnection.js";
-
-import { Book } from "./models.js"
-
-const authorSchema = {
-    id: {
+const AuthorInitializer = (sequelize, DataTypes) => {
+  const Author = sequelize.define(
+    'Author',
+    {
+      id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-    },
-      
-    name: {
+      },
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
     },
+    {
+      tableName: 'authors',
+      timestamps: false,
+    }
+  )
+
+  Author.associate = (models) => {
+    Author.hasMany(models.Book, {
+      foreignKey: 'author_id',
+    })
+  }
+
+  return Author
 }
 
-const Author = sequelize.define('Author', authorSchema, 
-	{
-		timestamps: true,
-	}
-)
-
-Author.hasMany(Book, {
-	foreignKey: 'author_id',
-})
-
-module.exports = Author;
+export default AuthorInitializer;
