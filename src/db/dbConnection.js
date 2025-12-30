@@ -1,16 +1,14 @@
-import {Sequelize} from "sequelize";
+import { Sequelize } from "sequelize";
 
 import dotenv from "dotenv";
 
 dotenv.config();
 
 export const sequelize = new Sequelize(
-    process.env.DB_SCHEMA,
-    process.env.DB_USERNAME,
-    process.env.DB_PASSWORD,
     {
-        host: process.env.HOST,
-        dialect: process.env.DB_ENGINE
+        dialect: 'sqlite',
+        storage: './database.sqlite',
+        logging: true,
     }
 );
 
@@ -18,7 +16,7 @@ export const sequelize = new Sequelize(
 export const dbConnection = async () => {
     try {
         await sequelize.authenticate();
-        // sequelize.sync({force: true});
+        await sequelize.sync({ alter: true })
         console.log('Connection has been established successfully.');
     }
     catch (error) {

@@ -2,11 +2,11 @@ import Express from "express";
 import dotenv from "dotenv";
 
 import { router as apiRouter } from "./routers/apisV1.router.js";
-import { dbConnection } from "./db/dbConnection"
+import { dbConnection } from "./db/dbConnection.js"
 import { ApiError } from "./utils/apiErrors.js";
 import globalErrorHandle from "./middlewares/globalErrorHandle.middleware.js";
 
-dotenv.config({path: "config.env"});
+dotenv.config();
 
 const app = Express();
 
@@ -16,7 +16,7 @@ await dbConnection()
 
 app.use("/api/v1", apiRouter);
 
-app.use("*", (req, res, next) => {
+app.use((req, res, next) => {
     next(new ApiError("invalid route", 404));
 });
 
