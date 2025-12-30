@@ -7,5 +7,10 @@
 ### to run the project
 
 ```bash
-docker-compose up 
+docker-compose up --build -d
+```
+
+```bash
+## to run application without docker 
+npm run
 ```
