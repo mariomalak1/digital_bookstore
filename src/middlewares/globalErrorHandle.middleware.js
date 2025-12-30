@@ -9,10 +9,8 @@ const globalErrorHandle = (err, req, res, next) => {
             message: err.message,
         }
         
-        if(process.env.ENV_MODE === "development"){
-            errorJson.stack = err.stack;
-            errorJson.error = err;
-        }
+        // errorJson.stack = err.stack;
+        // errorJson.error = err;
         
         res.status(err.statusCode).send({error:{...errorJson}});
     }

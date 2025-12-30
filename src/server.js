@@ -1,12 +1,9 @@
 import Express from "express";
-import dotenv from "dotenv";
 
 import { router as apiRouter } from "./routers/apisV1.router.js";
 import { dbConnection } from "./db/dbConnection.js"
 import { ApiError } from "./utils/apiErrors.js";
 import globalErrorHandle from "./middlewares/globalErrorHandle.middleware.js";
-
-dotenv.config();
 
 const app = Express();
 
@@ -22,7 +19,7 @@ app.use((req, res, next) => {
 
 app.use(globalErrorHandle);
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
